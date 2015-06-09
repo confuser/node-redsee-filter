@@ -8,5 +8,6 @@ module.exports = function () {
   , 'niga'
   , 'cunt'
   , 'pussy'
+  , 'masturbation'
   ]
 }

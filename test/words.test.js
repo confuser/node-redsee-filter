@@ -144,13 +144,13 @@ describe('Words Filter', function () {
   })
 
   it('should handle similar looking letters attempting to bypass', function (done) {
-    var msg = 'fvck cvm cvnt pen1s'
+    var msg = 'fvck cvm cvnt pen1s masturbati0n'
       , res = {}
 
     filter(client, res, msg, function (error) {
       if (error) return done(error)
 
-      assert.deepEqual(res, { words: [ 'fuck', 'cum', 'cunt', 'penis' ] })
+      assert.deepEqual(res, { words: [ 'fuck', 'cum', 'cunt', 'penis', 'masturbation' ] })
 
       done()
     })
