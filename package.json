@@ -1,7 +1,7 @@
 {
   "name": "redsee-filter",
   "version": "0.0.1",
-  "description": "English profanity filter",
+  "description": "English profanity, email and url filter backed by redis",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -27,7 +27,16 @@
     "chat",
     "swear",
     "message",
-    "redsee"
+    "redsee",
+    "redis",
+    "url",
+    "urls",
+    "email"
+    "emails",
+    "word",
+    "words",
+    "phrase",
+    "phrases"
   ],
   "author": "James Mortemore <jamesmortemore@gmail.com>",
   "license": "ISC",
