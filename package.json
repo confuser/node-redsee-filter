@@ -1,6 +1,6 @@
 {
   "name": "redsee-filter",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "English profanity, email and url filter backed by redis",
   "main": "index.js",
   "directories": {
