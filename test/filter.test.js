@@ -41,6 +41,7 @@ var assert = require('assert-diff')
   , blacklistFixturePhrases = require('./fixtures/blacklist-phrases')()
   , whitelistFixtureUrls = require('./fixtures/whitelist-urls')()
   , whitelistFixtureEmails = require('./fixtures/whitelist-emails')()
+  , blacklistFixtureAscii = require('./fixtures/blacklist-ascii')()
   , client
 
 describe('Filter', function () {
@@ -56,6 +57,8 @@ describe('Filter', function () {
 
     client.sadd([ 'redsee-whitelist:words' ].concat(whitelistFixtureWords))
     client.sadd([ 'redsee-blacklist:words' ].concat(blacklistFixtureWords))
+
+    client.sadd([ 'redsee-blacklist:ascii' ].concat(blacklistFixtureAscii))
 
     blacklistFixtureWords.forEach(function (word) {
       var phonetics = dm.process(word)
@@ -82,10 +85,11 @@ describe('Filter', function () {
     client.del('redsee-whitelist:words')
     client.del('redsee-blacklist:phrases')
     client.del('redsee-blacklist:phonetic-words')
+    client.del('redsee-blacklist:ascii')
   })
 
   it('should match all', function (done) {
-    var msg = 'This contains fucking swearing, using p3n15 pu$$y leet you ass as well as a plethora of emails'
+    var msg = 'This contains fucking swearing, using 8=== p3n15 pu$$y leet you ass as well as a plethora of emails'
     + ' like example@example.net example@example.com, domains such as www.frostcast.net notreal.xxx http://spam.net'
     + ' and this is a good example of how fast it takes to analyse text of this length'
 
@@ -97,6 +101,7 @@ describe('Filter', function () {
       , urls: [ 'notreal.xxx', 'http://spam.net' ]
       , phrases: [ 'you ass' ]
       , words: [ 'penis', 'pussy' ]
+      , ascii: [ '8===' ]
       }
 
       assert.deepEqual(res, expected)
