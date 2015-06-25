@@ -23,33 +23,7 @@ describe('Normalise Filter', function () {
     filter(null, res, msg, function (error, normalised) {
       if (error) return done(error)
 
-      assert.equal(normalised, 'this is a diacratic looks normal but nope')
-
-      done()
-    })
-  })
-
-  it('should convert symbols', function (done) {
-    var msg = 'Why so $a$$y p£adro nopⓔ'
-      , res = {}
-
-    filter(null, res, msg, function (error, normalised) {
-      if (error) return done(error)
-
-      assert.equal(normalised, 'why so sassy peadro nope')
-
-      done()
-    })
-  })
-
-  it('should replace all missed non-alphanumerics with spaces', function (done) {
-    var msg = 'h_e_l_o'
-      , res = {}
-
-    filter(null, res, msg, function (error, normalised) {
-      if (error) return done(error)
-
-      assert.equal(normalised, 'h e l o')
+      assert.equal(normalised, 'this is a diacratic, looks normal but nope')
 
       done()
     })

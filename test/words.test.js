@@ -169,4 +169,17 @@ describe('Words Filter', function () {
     })
   })
 
+  it('should handle symbols', function (done) {
+    var msg = 'You pu$$y f_u_ck u'
+      , res = {}
+
+    filter(client, res, msg, function (error) {
+      if (error) return done(error)
+
+      assert.deepEqual(res, { words: [ 'pussy', 'fuck' ] })
+
+      done()
+    })
+  })
+
 })

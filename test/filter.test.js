@@ -96,7 +96,7 @@ describe('Filter', function () {
       { emails: [ 'example@example.net' ]
       , urls: [ 'notreal.xxx', 'http://spam.net' ]
       , phrases: [ 'you ass' ]
-      , words: [ 'pussy', 'penis' ]
+      , words: [ 'penis', 'pussy' ]
       }
 
       assert.deepEqual(res, expected)
