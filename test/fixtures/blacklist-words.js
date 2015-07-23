@@ -5,7 +5,6 @@ module.exports = function () {
   , 'cum'
   , 'penis'
   , 'sex'
-  , 'niga'
   , 'cunt'
   , 'pussy'
   , 'masturbation'

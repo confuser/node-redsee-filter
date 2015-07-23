@@ -6,5 +6,6 @@ module.exports = function () {
   , 'u'
   , 'c'
   , 'k'
+  , 'scunthorpe'
   ]
 }
