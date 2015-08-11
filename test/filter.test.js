@@ -1,5 +1,7 @@
 var assert = require('assert-diff')
   , redis = require('redis')
+  , XXHash = require('xxhash')
+  , seed = 0xCAFEBABE // This may need to change, based on xxhash docs
   , natural = require('natural')
   , dm = natural.DoubleMetaphone
   , filter = require('../lib/filter')
@@ -47,28 +49,33 @@ var assert = require('assert-diff')
 describe('Filter', function () {
   before(function (done) {
     client = redis.createClient()
+    client.prefix = 'test'
 
-    client.sadd([ 'redsee-whitelist:phrases' ].concat(whitelistFixturePhrases))
-    client.sadd([ 'redsee-blacklist:phrases' ].concat(blacklistFixturePhrases))
+    client.sadd([ 'testredsee-whitelist:phrases' ].concat(whitelistFixturePhrases))
+    client.sadd([ 'testredsee-blacklist:phrases' ].concat(blacklistFixturePhrases))
 
-    client.sadd([ 'redsee-whitelist:urls' ].concat(whitelistFixtureUrls))
+    client.sadd([ 'testredsee-whitelist:urls' ].concat(whitelistFixtureUrls))
 
-    client.sadd([ 'redsee-whitelist:emails' ].concat(whitelistFixtureEmails))
+    client.sadd([ 'testredsee-whitelist:emails' ].concat(whitelistFixtureEmails))
 
-    client.sadd([ 'redsee-whitelist:words' ].concat(whitelistFixtureWords))
-    client.sadd([ 'redsee-blacklist:words' ].concat(blacklistFixtureWords))
+    whitelistFixtureWords = whitelistFixtureWords.map(function (word) {
+      return XXHash.hash(new Buffer(word), seed)
+    });
 
-    client.sadd([ 'redsee-blacklist:ascii' ].concat(blacklistFixtureAscii))
+    client.sadd([ 'testredsee-whitelist:words' ].concat(whitelistFixtureWords))
+    client.sadd([ 'testredsee-blacklist:words' ].concat(blacklistFixtureWords))
+
+    client.sadd([ 'testredsee-blacklist:ascii' ].concat(blacklistFixtureAscii))
 
     blacklistFixtureWords.forEach(function (word) {
       var phonetics = dm.process(word)
 
       if (!phonetics || !phonetics[0]) return
 
-      client.hmset('redsee-blacklist:phonetic-words',  phonetics[0], word)
+      client.hmset('testredsee-blacklist:phonetic-words',  phonetics[0], word)
 
       if (phonetics[0] !== phonetics[1]) {
-        client.hmset('redsee-blacklist:phonetic-words',  phonetics[1], word)
+        client.hmset('testredsee-blacklist:phonetic-words',  phonetics[1], word)
       }
 
     })
@@ -78,14 +85,14 @@ describe('Filter', function () {
   })
 
   after(function () {
-    client.del('redsee-whitelist:phrases')
-    client.del('redsee-blacklist:phrases')
-    client.del('redsee-whitelist:urls')
-    client.del('redsee-whitelist:emails')
-    client.del('redsee-whitelist:words')
-    client.del('redsee-blacklist:phrases')
-    client.del('redsee-blacklist:phonetic-words')
-    client.del('redsee-blacklist:ascii')
+    client.del('testredsee-whitelist:phrases')
+    client.del('testredsee-blacklist:phrases')
+    client.del('testredsee-whitelist:urls')
+    client.del('testredsee-whitelist:emails')
+    client.del('testredsee-whitelist:words')
+    client.del('testredsee-blacklist:phrases')
+    client.del('testredsee-blacklist:phonetic-words')
+    client.del('testredsee-blacklist:ascii')
   })
 
   it('should match all', function (done) {

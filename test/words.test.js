@@ -1,5 +1,7 @@
 var assert = require('assert')
   , redis = require('redis')
+  , XXHash = require('xxhash')
+  , seed = 0xCAFEBABE // This may need to change, based on xxhash docs
   , natural = require('natural')
   , dm = natural.DoubleMetaphone
   , filter = require('../lib/filters/words')
@@ -12,19 +14,24 @@ require('redis-scanstreams')(redis)
 describe('Words Filter', function () {
   before(function (done) {
     client = redis.createClient()
+    client.prefix = 'test'
 
-    client.sadd([ 'redsee-whitelist:words' ].concat(whitelistFixture))
-    client.sadd([ 'redsee-blacklist:words' ].concat(blacklistFixture))
+    whitelistFixture = whitelistFixture.map(function (word) {
+      return XXHash.hash(new Buffer(word), seed)
+    });
+
+    client.sadd([ 'testredsee-whitelist:words' ].concat(whitelistFixture))
+    client.sadd([ 'testredsee-blacklist:words' ].concat(blacklistFixture))
 
     blacklistFixture.forEach(function (word) {
       var phonetics = dm.process(word)
 
       if (!phonetics || !phonetics[0]) return
 
-      client.hmset('redsee-blacklist:phonetic-words',  phonetics[0], word)
+      client.hmset('testredsee-blacklist:phonetic-words',  phonetics[0], word)
 
       if (phonetics[0] !== phonetics[1]) {
-        client.hmset('redsee-blacklist:phonetic-words',  phonetics[1], word)
+        client.hmset('testredsee-blacklist:phonetic-words',  phonetics[1], word)
       }
 
     })
@@ -34,9 +41,9 @@ describe('Words Filter', function () {
   })
 
   after(function () {
-    client.del('redsee-whitelist:words')
-    client.del('redsee-blacklist:words')
-    client.del('redsee-blacklist:phonetic-words')
+    client.del('testredsee-whitelist:words')
+    client.del('testredsee-blacklist:words')
+    client.del('testredsee-blacklist:phonetic-words')
   })
 
   it('should match blacklisted word', function (done) {

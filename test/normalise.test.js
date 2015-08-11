@@ -29,4 +29,17 @@ describe('Normalise Filter', function () {
     })
   })
 
+  it('should remove duplicates', function (done) {
+    var msg = 'This is ａ sheep, looooooool'
+      , res = {}
+
+    filter(null, res, msg, function (error, normalised) {
+      if (error) return done(error)
+
+      assert.equal(normalised, 'this is a sheep, lol')
+
+      done()
+    })
+  })
+
 })

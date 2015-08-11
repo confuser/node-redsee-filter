@@ -9,14 +9,15 @@ require('redis-scanstreams')(redis)
 describe('Phrases Filter', function () {
   before(function (done) {
     client = redis.createClient()
+    client.prefix = 'test'
 
-    client.sadd([ 'redsee-blacklist:ascii' ].concat(blacklistFixture))
+    client.sadd([ 'testredsee-blacklist:ascii' ].concat(blacklistFixture))
 
     client.on('ready', done)
   })
 
   after(function () {
-    client.del('redsee-blacklist:ascii')
+    client.del('testredsee-blacklist:ascii')
   })
 
   it('should find blacklisted ascii', function (done) {

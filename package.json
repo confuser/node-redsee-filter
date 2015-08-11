@@ -51,7 +51,8 @@
     "natural": "^0.2.1",
     "powerset-stream": "^0.1.0",
     "through2": "^0.6.5",
-    "validity-currency": "^1.1.2"
+    "validity-currency": "^1.1.2",
+    "xxhash": "^0.2.2"
   },
   "devDependencies": {
     "assert-diff": "^1.0.1",

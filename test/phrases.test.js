@@ -10,16 +10,17 @@ require('redis-scanstreams')(redis)
 describe('Phrases Filter', function () {
   before(function (done) {
     client = redis.createClient()
+    client.prefix = 'test'
 
-    client.sadd([ 'redsee-whitelist:phrases' ].concat(whitelistFixture))
-    client.sadd([ 'redsee-blacklist:phrases' ].concat(blacklistFixture))
+    client.sadd([ 'testredsee-whitelist:phrases' ].concat(whitelistFixture))
+    client.sadd([ 'testredsee-blacklist:phrases' ].concat(blacklistFixture))
 
     client.on('ready', done)
   })
 
   after(function () {
-    client.del('redsee-whitelist:phrases')
-    client.del('redsee-blacklist:phrases')
+    client.del('testredsee-whitelist:phrases')
+    client.del('testredsee-blacklist:phrases')
   })
 
   it('should find blacklisted phrases', function (done) {

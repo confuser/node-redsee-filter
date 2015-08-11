@@ -9,8 +9,9 @@ require('redis-scanstreams')(fakeRedis)
 describe('URL Filter', function () {
   before(function () {
     client = fakeRedis.createClient(null, null, { fast: true })
+    client.prefix = 'test'
 
-    client.sadd([ 'redsee-whitelist:urls' ].concat(whitelistFixture))
+    client.sadd([ 'testredsee-whitelist:urls' ].concat(whitelistFixture))
   })
 
   it('should not allow urls', function (done) {
