@@ -1,12 +1,29 @@
+var XXHash = require('xxhash')
+  , seed = 0xCAFEBABE // This may need to change, based on xxhash docs
+  , words =
+    [ 'fuck'
+    , 'shit'
+    , 'cum'
+    , 'penis'
+    , 'sex'
+    , 'cunt'
+    , 'pussy'
+    , 'masturbation'
+    ]
+
 module.exports = function () {
-  return [
-    'fuck'
-  , 'shit'
-  , 'cum'
-  , 'penis'
-  , 'sex'
-  , 'cunt'
-  , 'pussy'
-  , 'masturbation'
-  ]
+  var buckets = {}
+
+  words.forEach(function (word) {
+    var hash = XXHash.hash(new Buffer(word), seed)
+      , bucket = hash % 100000
+
+    if (buckets[bucket]) {
+      buckets[bucket].push(hash)
+    } else {
+      buckets[bucket] = [ hash ]
+    }
+  });
+
+  return { buckets: buckets, words: words }
 }

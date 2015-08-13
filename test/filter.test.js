@@ -1,44 +1,10 @@
 var assert = require('assert-diff')
   , redis = require('redis')
-  , XXHash = require('xxhash')
-  , seed = 0xCAFEBABE // This may need to change, based on xxhash docs
   , natural = require('natural')
   , dm = natural.DoubleMetaphone
   , filter = require('../lib/filter')
-  , whitelistWords =
-    [ 'as'
-    , 'well'
-    , 'using'
-    , 'this'
-    , 'of'
-    , 'a'
-    , 'and'
-    , 'email'
-    , 'emails'
-    , 'like'
-    , 'such'
-    , 'how'
-    , 'fast'
-    , 'text'
-    , 'length'
-    , 'takes'
-    , 'good'
-    , 'contains'
-    , ','
-    , '!'
-    , 'is'
-    , 'it'
-    , 'to'
-    , 'swearing'
-    , 'example'
-    , 'domains'
-    , 'analyse'
-    , 'plethora'
-    , 'leet'
-    ]
-  , whitelistFixtureWords = require('./fixtures/whitelist-words')()
-    .concat(whitelistWords)
-  , blacklistFixtureWords = require('./fixtures/blacklist-words')()
+  , whitelistFixture = require('./fixtures/whitelist-words')()
+  , blacklistFixture = require('./fixtures/blacklist-words')()
   , whitelistFixturePhrases = require('./fixtures/whitelist-phrases')()
   , blacklistFixturePhrases = require('./fixtures/blacklist-phrases')()
   , whitelistFixtureUrls = require('./fixtures/whitelist-urls')()
@@ -58,16 +24,15 @@ describe('Filter', function () {
 
     client.sadd([ 'testredsee-whitelist:emails' ].concat(whitelistFixtureEmails))
 
-    whitelistFixtureWords = whitelistFixtureWords.map(function (word) {
-      return XXHash.hash(new Buffer(word), seed)
-    });
+    Object.keys(whitelistFixture.buckets).forEach(function (bucket) {
+      client.sadd('testredsee-whitelist:words:' + bucket, whitelistFixture.buckets[bucket])
+    })
 
-    client.sadd([ 'testredsee-whitelist:words' ].concat(whitelistFixtureWords))
-    client.sadd([ 'testredsee-blacklist:words' ].concat(blacklistFixtureWords))
+    Object.keys(blacklistFixture.buckets).forEach(function (bucket) {
+      client.sadd('testredsee-blacklist:words:' + bucket, blacklistFixture.buckets[bucket])
+    })
 
-    client.sadd([ 'testredsee-blacklist:ascii' ].concat(blacklistFixtureAscii))
-
-    blacklistFixtureWords.forEach(function (word) {
+    blacklistFixture.words.forEach(function (word) {
       var phonetics = dm.process(word)
 
       if (!phonetics || !phonetics[0]) return
@@ -79,6 +44,8 @@ describe('Filter', function () {
       }
 
     })
+
+    client.sadd([ 'testredsee-blacklist:ascii' ].concat(blacklistFixtureAscii))
 
     client.on('ready', done)
 

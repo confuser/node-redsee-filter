@@ -1,7 +1,5 @@
 var assert = require('assert')
   , redis = require('redis')
-  , XXHash = require('xxhash')
-  , seed = 0xCAFEBABE // This may need to change, based on xxhash docs
   , natural = require('natural')
   , dm = natural.DoubleMetaphone
   , filter = require('../lib/filters/words')
@@ -16,14 +14,15 @@ describe('Words Filter', function () {
     client = redis.createClient()
     client.prefix = 'test'
 
-    whitelistFixture = whitelistFixture.map(function (word) {
-      return XXHash.hash(new Buffer(word), seed)
-    });
+    Object.keys(whitelistFixture.buckets).forEach(function (bucket) {
+      client.sadd('testredsee-whitelist:words:' + bucket, whitelistFixture.buckets[bucket])
+    })
 
-    client.sadd([ 'testredsee-whitelist:words' ].concat(whitelistFixture))
-    client.sadd([ 'testredsee-blacklist:words' ].concat(blacklistFixture))
+    Object.keys(blacklistFixture.buckets).forEach(function (bucket) {
+      client.sadd('testredsee-blacklist:words:' + bucket, blacklistFixture.buckets[bucket])
+    })
 
-    blacklistFixture.forEach(function (word) {
+    blacklistFixture.words.forEach(function (word) {
       var phonetics = dm.process(word)
 
       if (!phonetics || !phonetics[0]) return
@@ -150,21 +149,6 @@ describe('Words Filter', function () {
     })
   })
 
-  // it.only('should handle similar looking letters attempting to bypass', function (done) {
-  //   var msg = 'fvck cvm cvnt pen1s masturbati0n (unt'
-  //     , res = {}
-
-  //   this.timeout(7000)
-
-  //   filter(client, res, msg, function (error) {
-  //     if (error) return done(error)
-
-  //     assert.deepEqual(res, { words: [ 'penis', 'masturbation', 'fuck', 'cunt', 'cum' ] })
-
-  //     done()
-  //   })
-  // })
-
   it('should handle spaces', function (done) {
     var msg = 'F u c k'
       , res = {}
@@ -177,19 +161,6 @@ describe('Words Filter', function () {
       done()
     })
   })
-
-  // it('should handle symbols', function (done) {
-  //   var msg = 'You pu$$y f_u_ck u'
-  //     , res = {}
-
-  //   filter(client, res, msg, function (error) {
-  //     if (error) return done(error)
-
-  //     assert.deepEqual(res, { words: [ 'pussy', 'fuck' ] })
-
-  //     done()
-  //   })
-  // })
 
   it('should handle nested words', function (done) {
     var msg = 'fuckshitcunt'
