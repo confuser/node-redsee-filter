@@ -42,7 +42,7 @@ module.exports = function () {
 
   words.forEach(function (word) {
     var hash = XXHash.hash(new Buffer(word), seed)
-      , bucket = hash % 100000
+      , bucket = hash % 500000
 
     if (buckets[bucket]) {
       buckets[bucket].push(hash)
