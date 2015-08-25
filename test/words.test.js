@@ -175,4 +175,30 @@ describe('Words Filter', function () {
     })
   })
 
+  it('should handle valid spaced words', function (done) {
+    var msg = 'A ball is hit with a bat' // Ensure filter does not find 's hit'
+      , res = {}
+
+    filter(client, res, msg, function (error) {
+      if (error) return done(error)
+
+      assert.deepEqual(res, { words: [ ] })
+
+      done()
+    })
+  })
+
+  it('should find profanity in patternised words', function (done) {
+    var msg = 'u aSlHlIlT FaUbCaK'
+      , res = {}
+
+    filter(client, res, msg, function (error) {
+      if (error) return done(error)
+
+      assert.deepEqual(res, { words: [ 'shit', 'fuck' ] })
+
+      done()
+    })
+  })
+
 })

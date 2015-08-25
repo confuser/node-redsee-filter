@@ -3,19 +3,6 @@ var assert = require('assert')
 
 describe('Normalise Filter', function () {
 
-  it('should force lower case', function (done) {
-    var msg = 'MUCH UPPERCases Woo'
-      , res = {}
-
-    filter(null, res, msg, function (error, normalised) {
-      if (error) return done(error)
-
-      assert.equal(normalised, 'much uppercases woo')
-
-      done()
-    })
-  })
-
   it('should remove diacratics', function (done) {
     var msg = 'This is ａ diacratic, looks normal but nope'
       , res = {}
@@ -23,7 +10,7 @@ describe('Normalise Filter', function () {
     filter(null, res, msg, function (error, normalised) {
       if (error) return done(error)
 
-      assert.equal(normalised, 'this is a diacratic, looks normal but nope')
+      assert.equal(normalised, 'This is a diacratic, looks normal but nope')
 
       done()
     })
@@ -36,7 +23,7 @@ describe('Normalise Filter', function () {
     filter(null, res, msg, function (error, normalised) {
       if (error) return done(error)
 
-      assert.equal(normalised, 'this is a sheep, lol')
+      assert.equal(normalised, 'This is a sheep, lol')
 
       done()
     })

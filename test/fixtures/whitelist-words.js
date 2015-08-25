@@ -35,6 +35,8 @@ var XXHash = require('xxhash')
     , 'analyse'
     , 'plethora'
     , 'leet'
+    , 'hit'
+    , 'you'
     ]
 
 module.exports = function () {
