@@ -188,6 +188,19 @@ describe('Words Filter', function () {
     })
   })
 
+  it('should find profanity in valid spaced words', function (done) {
+    var msg = 'you s hit ass hole'
+      , res = {}
+
+    filter(client, res, msg, function (error) {
+      if (error) return done(error)
+
+      assert.deepEqual(res, { words: [ 'shit', 'asshole' ] })
+
+      done()
+    })
+  })
+
   it('should find profanity in patternised words', function (done) {
     var msg = 'u aSlHlIlT FaUbCaK'
       , res = {}

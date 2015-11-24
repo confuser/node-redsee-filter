@@ -9,6 +9,7 @@ var XXHash = require('xxhash')
     , 'cunt'
     , 'pussy'
     , 'masturbation'
+    , 'asshole'
     ]
 
 module.exports = function () {
