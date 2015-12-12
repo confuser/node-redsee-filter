@@ -1,18 +1,8 @@
 var assert = require('assert')
-  , fakeRedis = require('fakeredis')
   , filter = require('../lib/filters/email')
-  , whitelistFixture = require('./fixtures/whitelist-emails')()
-  , client
-
-require('redis-scanstreams')(fakeRedis)
+  , client = require('./client')()
 
 describe('Email Filter', function () {
-  before(function () {
-    client = fakeRedis.createClient(null, null, { fast: true })
-    client.prefix = 'test'
-
-    client.sadd([ 'testredsee-whitelist:emails' ].concat(whitelistFixture))
-  })
 
   it('should not allow emails', function (done) {
     var msg = 'Send me an email this+is+an+email@address.co'

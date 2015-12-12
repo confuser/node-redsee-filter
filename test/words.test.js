@@ -1,49 +1,8 @@
 var assert = require('assert')
-  , redis = require('redis')
-  , natural = require('natural')
-  , dm = natural.DoubleMetaphone
   , filter = require('../lib/filters/words')
-  , whitelistFixture = require('./fixtures/whitelist-words')()
-  , blacklistFixture = require('./fixtures/blacklist-words')()
-  , client
-
-require('redis-scanstreams')(redis)
+  , client = require('./client')()
 
 describe('Words Filter', function () {
-  before(function (done) {
-    client = redis.createClient()
-    client.prefix = 'test'
-
-    Object.keys(whitelistFixture.buckets).forEach(function (bucket) {
-      client.sadd('testredsee-whitelist:words:' + bucket, whitelistFixture.buckets[bucket])
-    })
-
-    Object.keys(blacklistFixture.buckets).forEach(function (bucket) {
-      client.sadd('testredsee-blacklist:words:' + bucket, blacklistFixture.buckets[bucket])
-    })
-
-    blacklistFixture.words.forEach(function (word) {
-      var phonetics = dm.process(word)
-
-      if (!phonetics || !phonetics[0]) return
-
-      client.hmset('testredsee-blacklist:phonetic-words',  phonetics[0], word)
-
-      if (phonetics[0] !== phonetics[1]) {
-        client.hmset('testredsee-blacklist:phonetic-words',  phonetics[1], word)
-      }
-
-    })
-
-    client.on('ready', done)
-
-  })
-
-  after(function () {
-    client.del('testredsee-whitelist:words')
-    client.del('testredsee-blacklist:words')
-    client.del('testredsee-blacklist:phonetic-words')
-  })
 
   it('should match blacklisted word', function (done) {
     var normalisedMsg = 'fuck'

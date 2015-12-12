@@ -1,18 +1,8 @@
 var assert = require('assert')
-  , fakeRedis = require('fakeredis')
   , filter = require('../lib/filters/url')
-  , whitelistFixture = require('./fixtures/whitelist-urls')()
-  , client
-
-require('redis-scanstreams')(fakeRedis)
+  , client = require('./client')()
 
 describe('URL Filter', function () {
-  before(function () {
-    client = fakeRedis.createClient(null, null, { fast: true })
-    client.prefix = 'test'
-
-    client.sadd([ 'testredsee-whitelist:urls' ].concat(whitelistFixture))
-  })
 
   it('should not allow urls', function (done) {
     var msg = 'http://test.co example.co'

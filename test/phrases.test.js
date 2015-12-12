@@ -1,27 +1,8 @@
 var assert = require('assert')
-  , redis = require('redis')
   , filter = require('../lib/filters/phrases')
-  , whitelistFixture = require('./fixtures/whitelist-phrases')()
-  , blacklistFixture = require('./fixtures/blacklist-phrases')()
-  , client
-
-require('redis-scanstreams')(redis)
+  , client = require('./client')()
 
 describe('Phrases Filter', function () {
-  before(function (done) {
-    client = redis.createClient()
-    client.prefix = 'test'
-
-    client.sadd([ 'testredsee-whitelist:phrases' ].concat(whitelistFixture))
-    client.sadd([ 'testredsee-blacklist:phrases' ].concat(blacklistFixture))
-
-    client.on('ready', done)
-  })
-
-  after(function () {
-    client.del('testredsee-whitelist:phrases')
-    client.del('testredsee-blacklist:phrases')
-  })
 
   it('should find blacklisted phrases', function (done) {
     var normalisedMsg = 'you are such an ass'
@@ -62,10 +43,19 @@ describe('Phrases Filter', function () {
     })
   })
 
-  it('should handle redis errors', function (done) {
+  it('should handle errors', function (done) {
     var normalisedMsg = 'test'
       , res = {}
-      , errorClient = { sismember: function (key, value, cb) { cb(new Error('testing error')) } }
+      , errorClient =
+        { whitelist:
+          { phrases:
+            { contains: function (key, cb) { cb(new Error('testing error')) } }
+          }
+        , blacklist:
+          { phrases:
+            { contains: function (key, cb) { cb(new Error('testing error')) } }
+          }
+        }
 
     filter(errorClient, res, normalisedMsg, function () {
       assert.deepEqual(res, { phrases: [] })

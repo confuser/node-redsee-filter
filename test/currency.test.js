@@ -1,15 +1,8 @@
 var assert = require('assert')
-  , fakeRedis = require('fakeredis')
   , filter = require('../lib/filters/currency')
-  , client
-
-require('redis-scanstreams')(fakeRedis)
+  , client = require('./client')()
 
 describe('Currency Filter', function () {
-  before(function () {
-    client = fakeRedis.createClient(null, null, { fast: true })
-  })
-
   it('should not allow currencies', function (done) {
     var msg = 'This is a currency £100 and this is also one $100'
       , res = {}
