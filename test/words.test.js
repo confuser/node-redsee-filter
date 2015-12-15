@@ -186,4 +186,17 @@ describe('Words Filter', function () {
     })
   })
 
+  it('should handle duplicate letters', function (done) {
+    var msg = 'basstard'
+      , res = {}
+
+    filter(client, res, msg, function (error) {
+      if (error) return done(error)
+
+      assert.deepEqual(res, { words: [ 'bastard' ] })
+
+      done()
+    })
+  })
+
 })

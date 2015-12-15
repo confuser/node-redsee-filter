@@ -16,7 +16,7 @@ describe('Filter', function () {
       { emails: [ 'example@example.net' ]
       , urls: [ 'notreal.xxx', 'http://spam.net' ]
       , phrases: [ 'you ass' ]
-      , words: [ 'fuck', 'penis' ]
+      , words: [ 'penis', 'fuck' ]
       , ascii: [ '8===' ]
       }
 

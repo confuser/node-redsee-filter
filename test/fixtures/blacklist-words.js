@@ -10,5 +10,6 @@ module.exports = function () {
   , 'masturbation'
   , 'asshole'
   , 'twat'
+  , 'bastard'
   ]
 }

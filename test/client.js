@@ -49,6 +49,9 @@ module.exports = function () {
       { contains: function (word, callback) {
           return callback(null, blacklistWords.indexOf(word) !== -1)
         }
+      , stream: function () {
+          return spigot.array({ objectMode: true }, blacklistWords)
+        }
       }
     , ascii:
       { contains: function (word, callback) {
