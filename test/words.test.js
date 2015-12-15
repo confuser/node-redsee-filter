@@ -121,6 +121,19 @@ describe('Words Filter', function () {
     })
   })
 
+  it('should handle non-alphanumierc', function (done) {
+    var msg = 'ass_hole f,,,,uck'
+      , res = {}
+
+    filter(client, res, msg, function (error) {
+      if (error) return done(error)
+
+      assert.deepEqual(res, { words: [ 'asshole', 'fuck' ] })
+
+      done()
+    })
+  })
+
   it('should handle nested words', function (done) {
     var msg = 'fuckshitcunt'
       , res = {}
