@@ -38,5 +38,7 @@ module.exports = function () {
   , 'you'
   , 'ass'
   , 'hole'
+  , 'hot'
+  , 'water'
   ]
 }

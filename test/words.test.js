@@ -135,7 +135,7 @@ describe('Words Filter', function () {
   })
 
   it('should handle valid spaced words', function (done) {
-    var msg = 'A ball is hit with a bat' // Ensure filter does not find 's hit'
+    var msg = 'A ball is hit with a bat and hot water' // Ensure filter does not find 's hit' or 't wat'
       , res = {}
 
     filter(client, res, msg, function (error) {

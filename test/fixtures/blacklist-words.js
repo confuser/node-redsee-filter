@@ -9,5 +9,6 @@ module.exports = function () {
   , 'pussy'
   , 'masturbation'
   , 'asshole'
+  , 'twat'
   ]
 }
